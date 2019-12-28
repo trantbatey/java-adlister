@@ -1,0 +1,32 @@
+
+.banner {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+    background-color: aqua;
+    min-height: 3rem;
+    min-width: 98%;
+    font-size: 3rem;
+    color: red;
+    text-align: center;
+    border: 3px black solid;
+}
+
+.side-nav {
+    float: left;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 30px;
+    width: 7rem;
+    padding-left: 10px;
+    padding-top: 100px;
+    line-height: 200%;
+    font-size: 1.5rem;
+    border: 3px black solid;
+    background-color: blue;
+    min-height: 50%;
+}
+
+.side-nav a {
+    color: bisque;
+}

@@ -5,7 +5,7 @@ import java.util.List;
 public class MySQLAdsDao implements Ads {
 
     private Connection connection;
-    private static final String baseInsert = "INSERT INTO ads (user_id, title, description) VALUES ";
+    private static final String baseInsert = "INSERT INTO ads (user_id, title, description) VALUES (?, ?, ?)";
 
     public MySQLAdsDao(Config config) {
 
@@ -65,10 +65,11 @@ public class MySQLAdsDao implements Ads {
     @Override
     public Long insert(Ad ad) {
         try {
-            Statement statement = connection.createStatement();
-            String cmd = baseInsert + "(" + ad.getUserId() + ", '"
-                    + ad.getTitle() + "', '" + ad.getDescription() + "');";
-            statement.executeUpdate(cmd);
+            PreparedStatement statement = connection.prepareStatement(baseInsert);
+            statement.setLong(1, ad.getUserId());
+            statement.setString(2, ad.getTitle());
+            statement.setString(3, ad.getDescription());
+            statement.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Error inserting Ads data\n" +
                     "user_id: " + ad.getUserId() + "\n" +

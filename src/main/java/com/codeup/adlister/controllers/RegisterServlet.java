@@ -29,13 +29,13 @@ public class RegisterServlet extends HttpServlet {
             || (! password.equals(passwordConfirmation));
 
         if (inputHasErrors) {
-            response.sendRedirect("/register");
+            response.sendRedirect("/adlister_war/register");
             return;
         }
 
         // create and save a new user
         User user = new User(username, email, password);
         DaoFactory.getUsersDao().insert(user);
-        response.sendRedirect("/login");
+        response.sendRedirect("/adlister_war/login");
     }
 }

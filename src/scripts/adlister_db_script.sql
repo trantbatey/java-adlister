@@ -38,4 +38,14 @@ INSERT INTO users (username, email, password)
     VALUES ('adl_user1', 'us1@codeup.com', 'user1'),
            ('adl_user2', 'us2@yahoo.com', 'user2'),
            ('adl_user3', 'us3@aol.com', 'user3'),
-           ('adl_user4', 'us4@gmail.com', 'user4');
+           ('adl_user4', 'us4@gmail.com', 'user4'),
+           ('Humphery', 'Humphery@gmail.com', 'Casablanca'),
+           ('admin', 'admin@codeup.com', 'password');
+
+INSERT INTO ads (id, user_id, title, description)
+    VALUES (1, 1, 'playstation for sale', 'This is a slightly used playstation'),
+           (2, 1, 'Super Nintendo', 'Get your game on with this old-school classic!'),
+           (3, 2, 'Junior Java Developer Position',
+            'Minimum 7 years of experience required. You will be working in the scripting language for Java, JavaScript'),
+           (4, 2, 'JavaScript Developer needed', 'Must have strong Java skills');
+

@@ -1,6 +1,7 @@
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import com.mysql.cj.jdbc.Driver;
 
 public class MySQLAdsDao implements Ads {
 
@@ -11,9 +12,7 @@ public class MySQLAdsDao implements Ads {
 
         // The driver MUST BE registered with the DriverManager
         try {
-            // The newInstance() call is a work around for some
-            // broken Java implementations
-            Class.forName(config.getDriver()).getConstructor().newInstance();
+            DriverManager.registerDriver(new Driver());
         } catch (Exception e) {
             System.out.println("SQLException: " + e.getMessage());
         }

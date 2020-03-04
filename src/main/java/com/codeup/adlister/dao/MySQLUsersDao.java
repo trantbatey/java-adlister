@@ -32,22 +32,23 @@ public class MySQLUsersDao implements Users {
         } catch (SQLException e) {
             throw new RuntimeException("Error finding a user by username", e);
         }
-    }
-
-    @Override
+    }@Override
     public Long insert(User user) {
-        String query = "INSERT INTO users(username, email, password) VALUES (?, ?, ?)";
         try {
-            PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getEmail());
-            stmt.setString(3, user.getPassword());
+            String sql = String.format("INSERT INTO Users(id, username, email, password) VALUES ('%d', '%s', '%s', '%s');",
+                    user.getId(), user.getUsername(), user.getEmail(), user.getPassword());
+            PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+//            PreparedStatement stmt = connection.prepareStatement(getInsertQuery(), Statement.RETURN_GENERATED_KEYS);
+//            stmt.setLong(1, user.getId());
+//            stmt.setString(2, user.getUsername());
+//            stmt.setString(3, user.getEmail());
+//            stmt.setString(4, user.getPassword());
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
             rs.next();
             return rs.getLong(1);
         } catch (SQLException e) {
-            throw new RuntimeException("Error creating new user", e);
+            throw new RuntimeException("Error creating a new user.", e);
         }
     }
 

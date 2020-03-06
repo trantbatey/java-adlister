@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
-@WebServlet(name = "controllers.RegisterServlet", urlPatterns = "/register")
+@WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
 
     private static final Pattern pattern = Pattern.compile("[A-Za-z_][A-Za-z0-9_]+");
@@ -27,7 +27,11 @@ public class RegisterServlet extends HttpServlet {
 
         // ensure the submitted information is valid
         request.setAttribute("error", null);
-        if (!vaildateUsername(request.getParameter("username"))) {
+        if (!request.getParameter("password").equals(request.getParameter("confirm_password"))) {
+            request.setAttribute("error", "Password confirmation failed.");
+            request.getRequestDispatcher("/WEB-INF/users/register.jsp")
+                    .forward(request, response);
+        } else if (!vaildateUsername(request.getParameter("username"))) {
             request.setAttribute("error", "Invalid username");
             request.getRequestDispatcher("/WEB-INF/users/register.jsp")
                     .forward(request, response);

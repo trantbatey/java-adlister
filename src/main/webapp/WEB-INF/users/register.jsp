@@ -25,7 +25,10 @@
         <input type="text" id="email" name="email" placeholder="Enter Email Address" ><br><br>
 
         <label for="password">Password: </label>
-        <input type="password" id="password" name="password" placeholder="Enter Password" >
+        <input type="password" id="password" name="password" placeholder="Enter Password" ><br><br>
+
+        <label for="confirm_password">Confirm Password: </label>
+        <input type="password" id="confirm_password" name="confirm_password" placeholder="Enter Password" ><br><br>
 
         <button type="submit">Submit</button>
     </form>

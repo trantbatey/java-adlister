@@ -3,8 +3,6 @@ package com.codeup.adlister.controllers;
 import com.codeup.adlister.dao.DaoFactory;
 import com.codeup.adlister.models.User;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,44 +23,66 @@ public class RegisterServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        // ensure the submitted information is valid
+        // *** ensure the submitted information is valid ***
+        boolean userInfoIsInvalid = false;
         request.setAttribute("error", null);
+        String redirectPath = "/WEB-INF/users/register.jsp";
+        if (!userRegistrationDataIsInvalid(request)) {
+            request.getRequestDispatcher(redirectPath).forward(request, response);
+            return;
+        }
+
+        // create a new user based off of the user registration data submitted
+        User user = new User(
+                DaoFactory.getUsersDao().getMaxId() + 1,
+                request.getParameter("username"),
+                request.getParameter("email"),
+                request.getParameter("password")
+        );
+        DaoFactory.getUsersDao().insert(user);
+
+        // if a user was successfully created, send them to their profile
+        request.getSession().invalidate();
+        request.getSession().setAttribute("user", user);
+        response.sendRedirect("./profile");
+    }
+
+    // validate user registration information
+    private static boolean userRegistrationDataIsInvalid(HttpServletRequest request) {
+
+        // *** ensure the submitted information is valid ***
+        boolean userInfoIsInvalid = false;
+        request.setAttribute("error", null);
+
+        // check username meets criteria
+        if (!isUsernameValid(request.getParameter("username"))) {
+            request.setAttribute("error", "Invalid username");
+            return false;
+        }
+
+        // Check for valid email
+        if (!isEmailValid(request.getParameter("email"))) {
+            request.setAttribute("error", "Invalid email address");
+            return false;
+        }
+
+        // validate password
+        if (!isPasswordValid(request.getParameter("password"))) {
+            request.setAttribute("error", "Invalid password");
+            return false;
+        }
+
+        // Confirm password
         if (!request.getParameter("password").equals(request.getParameter("confirm_password"))) {
             request.setAttribute("error", "Password confirmation failed.");
-            request.getRequestDispatcher("/WEB-INF/users/register.jsp")
-                    .forward(request, response);
-        } else if (!vaildateUsername(request.getParameter("username"))) {
-            request.setAttribute("error", "Invalid username");
-            request.getRequestDispatcher("/WEB-INF/users/register.jsp")
-                    .forward(request, response);
-        } else if (!vaildateEmail(request.getParameter("email"))) {
-            request.setAttribute("error", "Invalid email address");
-            request.getRequestDispatcher("/WEB-INF/users/register.jsp")
-                    .forward(request, response);
-        } else if (!vaildatePassword(request.getParameter("password"))) {
-            request.setAttribute("error", "Invalid password");
-            request.getRequestDispatcher("/WEB-INF/users/register.jsp")
-                    .forward(request, response);
-        } else {
-
-            // create a new user based off of the submitted information
-            User user = new User(
-                    DaoFactory.getUsersDao().getMaxId() + 1,
-                    request.getParameter("username"),
-                    request.getParameter("email"),
-                    request.getParameter("password")
-            );
-            DaoFactory.getUsersDao().insert(user);
-
-            // if a user was successfully created, send them to their profile
-            request.getSession().invalidate();
-            request.getSession().setAttribute("user", user);
-            response.sendRedirect("./profile");
+            return false;
         }
+
+        return true;
     }
 
     // validate username
-    private static boolean vaildateUsername(String username) {
+    private static boolean isUsernameValid(String username) {
         if (username == null) return false;
         if (username.length() < 4 || username.length() > 20) return false;
         if (!pattern.matcher(username).matches()) return false;
@@ -70,19 +90,13 @@ public class RegisterServlet extends HttpServlet {
     }
 
     // validate email
-    private static boolean vaildateEmail(String email) {
-        boolean result = true;
-        try {
-            InternetAddress emailAddr = new InternetAddress(email);
-            emailAddr.validate();
-        } catch (AddressException ex) {
-            result = false;
-        }
-        return result;
+    private static boolean isEmailValid(String email) {
+        String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+        return email.matches(regex);
     }
 
     // validate password
-    private static boolean vaildatePassword(String password) {
+    private static boolean isPasswordValid(String password) {
         boolean hasUpper = false;
         boolean hasLower = false;
         boolean hasSpecial = false;
@@ -91,7 +105,7 @@ public class RegisterServlet extends HttpServlet {
 
         if (password == null) return false;
         if (password.length() < 4 || password.length() > 20) return false;
-        for(int i =0; i<password.length(); i++){
+        for (int i = 0; i < password.length(); i++) {
             char c = password.charAt(i);
             if (Character.isUpperCase(c)) {
                 hasUpper = true;
@@ -99,7 +113,7 @@ public class RegisterServlet extends HttpServlet {
                 hasLower = true;
             } else if (Character.isDigit(c)) {
                 hasDigit = true;
-            } else if (c>=33&&c<=46||c==64) {
+            } else if (c >= 33 && c <= 46 || c == 64) {
                 hasSpecial = true;
             } else {
                 result = false;

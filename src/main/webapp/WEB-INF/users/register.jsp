@@ -14,7 +14,7 @@
 </head>
 <body>
 <jsp:include page="/WEB-INF/partials/navbar.jsp"/>
-<div style="margin: 20px">
+<div class="container">
     <h1>User Registration Form</h1>
 
     <c:if test="${not empty error}">

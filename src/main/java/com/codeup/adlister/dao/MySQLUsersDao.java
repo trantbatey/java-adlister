@@ -13,7 +13,7 @@ public class MySQLUsersDao implements Users {
             DriverManager.registerDriver(new Driver());
             connection = DriverManager.getConnection(
                 config.getUrl(),
-                config.getUser(),
+                config.getUsername(),
                 config.getPassword()
             );
         } catch (SQLException e) {
@@ -32,7 +32,9 @@ public class MySQLUsersDao implements Users {
         } catch (SQLException e) {
             throw new RuntimeException("Error finding a user by username", e);
         }
-    }@Override
+    }
+
+    @Override
     public Long insert(User user) {
         try {
             String sql = String.format("INSERT INTO Users(id, username, email, password) VALUES ('%d', '%s', '%s', '%s');",
@@ -50,6 +52,10 @@ public class MySQLUsersDao implements Users {
         } catch (SQLException e) {
             throw new RuntimeException("Error creating a new user.", e);
         }
+    }
+
+    private String getInsertQuery() {
+        return "INSERT INTO Users(id, username, email, password) VALUES (?, ?, ?, ?);";
     }
 
     private User extractUser(ResultSet rs) throws SQLException {
